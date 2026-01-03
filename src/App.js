@@ -10,10 +10,6 @@ const App = () => {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // API Configuration - Replace with your own API key
-  const API_KEY = process.env.WEATHER_API_KEY; // Get your free API key from https://www.weatherapi.com/
-  const API_BASE_URL = 'https://api.weatherapi.com/v1';
-
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     fetchWeatherByLocation();
@@ -43,7 +39,7 @@ const App = () => {
     
     try {
       const response = await fetch(
-        `${API_BASE_URL}/forecast.json?key=${API_KEY}&q=${query}&days=5&aqi=yes`
+        `/api/weather?query=${encodeURIComponent(query)}`
       );
       
       if (!response.ok) throw new Error('City not found');
