@@ -11,7 +11,7 @@ const App = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // API Configuration - Replace with your own API key
-  const API_KEY = '1edd8ca461f04cc6a6972130260301'; // Get your free API key from https://www.weatherapi.com/
+  const API_KEY = process.env.WEATHER_API_KEY; // Get your free API key from https://www.weatherapi.com/
   const API_BASE_URL = 'https://api.weatherapi.com/v1';
 
   useEffect(() => {
