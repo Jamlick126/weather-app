@@ -10,11 +10,41 @@ const App = () => {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     fetchWeatherByLocation();
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const handler = (e) => {
+    e.preventDefault();
+    setInstallPrompt(e);
+    setShowInstallButton(true);
+  };
+  
+  window.addEventListener('beforeinstallprompt', handler);
+  
+  return () => window.removeEventListener('beforeinstallprompt', handler);
+
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      setShowInstallButton(false);
+    }
+    
+    setInstallPrompt(null);
+  };
 
   const fetchWeatherByLocation = async () => {
     if (navigator.geolocation) {
@@ -102,6 +132,16 @@ const App = () => {
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Weather Forecast</h1>
           <p className="text-white text-opacity-90">{currentTime.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        
+        {/* Install Button */}
+        {showInstallButton && (
+          <button
+            onClick={handleInstallClick}
+            className="absolute top-0 right-0 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-full transition-all backdrop-blur-md flex items-center space-x-2 text-sm"
+          >
+            <span className="text-white font-medium">📱 Install App</span>
+          </button>
+        )}
         </div>
 
         {/* Search Bar */}
